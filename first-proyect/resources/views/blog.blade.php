@@ -8,7 +8,11 @@
 
     @foreach ($posts as $post)
 
-        <h2>{{ $post['title']}}</h2>
+        <h2>
+            <a href="/blog/{{$post->id}}">
+                {{$post -> 'title'}}
+            </a>
+        </h2>
         
     @endforeach
     
