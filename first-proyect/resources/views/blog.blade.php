@@ -10,7 +10,7 @@
 
         <h2>
             <a href="/blog/{{$post->id}}">
-                {{$post -> 'title'}}
+                {{ $post->title }}
             </a>
         </h2>
         
