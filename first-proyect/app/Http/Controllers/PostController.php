@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use App\Http\Requests\SavePostRequest;
 
 class PostController extends Controller
 {
@@ -24,24 +25,11 @@ class PostController extends Controller
         return view('posts.create', ['post'=> new Post]);
     }
     
-    public function store(Request $request)
+    public function store(SavePostRequest $request)
     {
-        $request->validate([
-            'title' => ['required', 'min:4'],
-            'body' => ['required'],
-        ], [
-            'title.required' => ':attribute null!!',
-            'body.required' => ':attribute null!!',
-        ]);
+        Post::create($request->validated());
 
-        Post::create([
-            'title' => $request->input('title'),
-            'body' => $request->input('body'),
-        ]);
-
-        session()->flash('status', 'Post created!');
-
-        return to_route('posts.index');
+        return to_route('posts.index')->with('status', 'Post created!');
     }
     
     public function edit(Post $post)
@@ -49,23 +37,18 @@ class PostController extends Controller
         return view('posts.edit', ['post' => $post]);
     }
 
-    public function update(Request $request, Post $post)
+    public function update(SavePostRequest $request, Post $post)
     {
-        $request->validate([
-            'title' => ['required', 'min:4'],
-            'body' => ['required'],
-        ], [
-            'title.required' => ':attribute null!!',
-            'body.required' => ':attribute null!!',
-        ]);
 
-        $post->update([
-            'title' => $request->input('title'),
-            'body' => $request->input('body'),
-        ]);
+        $post->update($request->validated());
 
-        session()->flash('status', 'Post update!');
+        return to_route('posts.show', $post)->with('status', 'Post update!');    
+    }
 
-        return to_route('posts.show', $post);    
+    public function destroy(Post $post)
+    {
+        $post->delete();
+
+        return to_route('posts.index')->with('status', 'Post deleted..!!');
     }
 }
